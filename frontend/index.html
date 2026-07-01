@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OrderBridge</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">OrderBridge</p>
+          <h1>Panel local de pedidos e impresión</h1>
+          <p class="lede">Consulta el estado del servicio, sincroniza pedidos y reimprime desde una interfaz simple.</p>
+        </div>
+        <div class="hero-card">
+          <div class="status-row">
+            <span class="status-dot" id="serviceDot"></span>
+            <div>
+              <p class="label">Estado del servicio</p>
+              <strong id="serviceStatus">Verificando...</strong>
+            </div>
+          </div>
+          <div class="controls">
+            <button id="syncNowBtn" class="primary">Sincronizar ahora</button>
+            <button id="refreshBtn" class="secondary">Actualizar</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel printer-panel">
+        <div class="panel-head">
+          <div>
+            <p class="label">Impresoras</p>
+            <h2>Selecciona la impresora</h2>
+          </div>
+          <div class="printer-selected">
+            <span class="label">Seleccionada</span>
+            <strong id="selectedPrinter">-</strong>
+          </div>
+        </div>
+        <div class="printer-tools">
+          <select id="printerSelect"></select>
+          <button id="savePrinterBtn" class="secondary">Guardar impresora</button>
+          <button id="testPrinterBtn" class="ghost">Imprimir prueba</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="label">Órdenes</p>
+            <h2>Órdenes recientes</h2>
+          </div>
+          <div class="mini-stats">
+            <div><span>Órdenes</span><strong id="orderCount">0</strong></div>
+            <div><span>Última sync</span><strong id="lastSync">-</strong></div>
+          </div>
+        </div>
+        <div id="ordersGrid" class="orders-grid"></div>
+      </section>
+    </main>
+  </body>
+</html>
