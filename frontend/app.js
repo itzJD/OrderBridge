@@ -23,7 +23,7 @@ function formatDate(value) {
 }
 
 function renderService(ok) {
-  el("serviceStatus").textContent = ok ? "Activo" : "Sin conexión";
+  el("serviceStatus").textContent = ok ? "Online" : "Offline";
   el("serviceDot").className = `status-dot ${ok ? "ok" : "bad"}`;
 }
 
@@ -41,9 +41,6 @@ function renderPrinters() {
 }
 
 function orderStatusClass(status) {
-  if (status === "printed") return "badge";
-  if (status === "done") return "badge";
-  if (status === "cancelled") return "badge";
   return "badge";
 }
 
@@ -52,7 +49,7 @@ function renderOrders() {
   el("orderCount").textContent = String(state.orders.length);
   grid.innerHTML = "";
   if (!state.orders.length) {
-    grid.innerHTML = '<p class="muted">No hay órdenes para mostrar.</p>';
+    grid.innerHTML = '<p class="muted">No orders to show.</p>';
     return;
   }
 
@@ -68,14 +65,15 @@ function renderOrders() {
         <span class="${orderStatusClass(order.status)}">${order.status}</span>
       </div>
       <div class="meta">
-        <div>Creada: ${formatDate(order.created_at)}</div>
-        <div>Actualizada: ${formatDate(order.updated_at)}</div>
-        <div>Pago: ${order.payment_method || "-"} · ${order.payment_status || "-"}</div>
-        <div>Entrega: ${order.fulfillment_method || "-"}</div>
+        <div>Created: ${formatDate(order.created_at)}</div>
+        <div>Updated: ${formatDate(order.updated_at)}</div>
+        <div>Payment: ${order.payment_method || "-"} · ${order.payment_status || "-"}</div>
+        <div>Delivery: ${order.fulfillment_method || "-"}</div>
         <div>Items: ${order.items?.length || 0}</div>
       </div>
       <div class="order-actions">
-        <button data-action="reprint" data-id="${order.id}" class="secondary">Reimprimir</button>
+        <a class="secondary order-link" href="/api/orders/${order.id}/pdf" target="_blank" rel="noreferrer">PDF</a>
+        <button data-action="reprint" data-id="${order.id}" class="secondary">Reprint</button>
       </div>
     `;
     grid.appendChild(card);

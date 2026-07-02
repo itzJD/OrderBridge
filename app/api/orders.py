@@ -1,7 +1,9 @@
 from datetime import datetime
 import logging
+from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import FileResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
@@ -9,6 +11,7 @@ from app.db.models import Order
 from app.db.session import get_db
 from app.schemas.orders import OrderListResponse, OrderRead, OrderResponse, UpdateStatusRequest
 from app.services.order_mapper import normalize_goodbarber_order
+from app.services.pdf_service import generate_order_pdf
 from app.services.print_service import list_printers, print_order, print_test_page
 from app.services.settings_service import get_selected_printer, set_selected_printer
 from app.services.sync_service import upsert_order
@@ -84,6 +87,23 @@ def get_order(order_id: str, db: Session = Depends(get_db)):
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
     return {"order": serialize_order(order)}
+
+
+@router.get("/{order_id}/pdf")
+def download_order_pdf(order_id: str, db: Session = Depends(get_db)):
+    logger.info("GET /api/orders/%s/pdf", order_id)
+    order = db.execute(
+        select(Order).options(selectinload(Order.items)).where(Order.id == order_id)
+    ).scalar_one_or_none()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    pdf_path = generate_order_pdf(order)
+    return FileResponse(
+        path=pdf_path,
+        media_type="application/pdf",
+        filename=pdf_path.name,
+    )
 
 
 @router.post("/webhook/goodbarber")

@@ -36,6 +36,12 @@ button, select {
   font: inherit;
   padding: 12px 14px;
 }
+button, .order-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
 button { cursor: pointer; }
 .primary { background: #111827; color: #fff; border-color: #111827; }
 .secondary { background: #fff; }
@@ -57,6 +63,7 @@ button { cursor: pointer; }
 .meta { color: #6b7280; font-size: 13px; line-height: 1.5; }
 .order-actions { display: flex; gap: 8px; margin-top: 14px; }
 .order-actions button { flex: 1; }
+.order-actions .order-link { flex: 1; }
 .muted { color: #6b7280; }
 @media (max-width: 860px) {
   .hero, .panel-head { grid-template-columns: 1fr; display: grid; }
