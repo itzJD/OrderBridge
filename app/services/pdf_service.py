@@ -195,11 +195,17 @@ def build_totals_table(order: Order, styles) -> Table:
 
 def build_footer_details(order: Order, styles) -> Table:
     raw_payload = order.raw_payload if isinstance(order.raw_payload, dict) else {}
+    customer_note = (
+        raw_payload.get("customer_note")
+        or raw_payload.get("notes")
+        or raw_payload.get("comment")
+        or order.fulfillment_notes
+        or ""
+    )
     delivery_time_slot = (
         raw_payload.get("delivery_time_slot")
         or raw_payload.get("delivery_window")
         or raw_payload.get("time_slot")
-        or order.fulfillment_notes
         or "-"
     )
     delivery_address = (
@@ -219,6 +225,7 @@ def build_footer_details(order: Order, styles) -> Table:
         <br/>
         <b>Payment method</b><br/>
         {html_escape(payment_method)}
+        {build_customer_note_html(customer_note)}
         """.strip(),
         styles["TopBlock"],
     )
@@ -290,6 +297,13 @@ def clean_address(value) -> str:
     if not lines:
         return "-"
     return ", ".join(lines)
+
+
+def build_customer_note_html(value: str) -> str:
+    cleaned = " ".join(str(value or "").split()).strip()
+    if not cleaned:
+        return ""
+    return f"<br/><br/><b>Customer note</b><br/>{html_escape(cleaned)}"
 
 
 def format_order_date(value: datetime) -> str:

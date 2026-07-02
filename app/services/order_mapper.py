@@ -35,7 +35,7 @@ def normalize_goodbarber_order(payload: dict) -> dict:
             or source.get("delivery_method")
             or "No especificado"
         ),
-        "fulfillment_notes": source.get("notes") or source.get("comment") or "",
+        "fulfillment_notes": source.get("customer_note") or source.get("notes") or source.get("comment") or "",
         "subtotal": as_float(totals.get("subtotal") or source.get("subtotal")),
         "delivery": as_float(totals.get("delivery") or totals.get("shipping") or source.get("shipping_total")),
         "tax": as_float(totals.get("tax") or source.get("tax_total")),
