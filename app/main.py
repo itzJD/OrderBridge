@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import asyncio
 from pathlib import Path
 
 import logging
@@ -28,9 +29,9 @@ async def lifespan(app: FastAPI):
     if settings.goodbarber_sync_enabled:
         scheduler = build_scheduler()
         scheduler.start()
-        await scheduled_goodbarber_sync()
+        asyncio.create_task(scheduled_goodbarber_sync())
         logger.info(
-            "GoodBarber sync enabled: polling every %s seconds",
+            "GoodBarber sync enabled: polling every %s seconds; initial sync queued",
             settings.goodbarber_sync_interval_seconds,
         )
 

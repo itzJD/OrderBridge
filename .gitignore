@@ -2,5 +2,10 @@
 __pycache__/
 *.pyc
 .venv/
+logs/
+delete
+qc
+query
+stop
 storage/orderbridge.db
 storage/print_pdfs/
