@@ -4,6 +4,7 @@ from sqlalchemy import JSON, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
+from app.services.time_service import now_local_naive
 
 
 class Order(Base):
@@ -14,7 +15,7 @@ class Order(Base):
     status: Mapped[str] = mapped_column(String(32), default="new", index=True)
     reference: Mapped[str] = mapped_column(String(128), index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, index=True)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=now_local_naive, index=True)
 
     customer_name: Mapped[str] = mapped_column(String(255), default="")
     customer_phone: Mapped[str] = mapped_column(String(128), default="")

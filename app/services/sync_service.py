@@ -1,5 +1,4 @@
 import asyncio
-from datetime import datetime
 import logging
 
 from sqlalchemy import select
@@ -10,6 +9,7 @@ from app.db.models import Order, OrderItem
 from app.services.goodbarber import fetch_goodbarber_orders
 from app.services.order_mapper import normalize_goodbarber_order
 from app.services.print_service import print_order
+from app.services.time_service import now_local_naive
 
 
 _sync_lock = asyncio.Lock()
@@ -50,7 +50,7 @@ async def sync_goodbarber_orders(db: Session, auto_print: bool | None = None) ->
                     logger.info("Auto-printing order reference=%s", order.reference)
                     print_order(order)
                     order.status = "printed"
-                    order.updated_at = datetime.utcnow()
+                    order.updated_at = now_local_naive()
                     printed_count += 1
                     logger.info("Auto-print OK reference=%s new_status=%s", order.reference, order.status)
                 except Exception as error:
@@ -87,7 +87,7 @@ def upsert_order(db: Session, payload: dict) -> tuple[Order, bool]:
     order.status = preserve_status
     order.reference = payload["reference"]
     order.created_at = payload["created_at"]
-    order.updated_at = datetime.utcnow()
+    order.updated_at = now_local_naive()
     order.customer_name = payload["customer_name"]
     order.customer_phone = payload["customer_phone"]
     order.customer_email = payload["customer_email"]

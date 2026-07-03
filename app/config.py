@@ -32,6 +32,7 @@ class Settings(BaseSettings):
     print_pdf_dir: Path = Field(default=BASE_DIR / "storage" / "print_pdfs")
     printer_name: str = ""
     windows_print_action: str = "printto"
+    local_timezone: str = "America/Caracas"
 
 
 settings = Settings()

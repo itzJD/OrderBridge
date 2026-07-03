@@ -1,6 +1,8 @@
 from datetime import datetime
 from uuid import uuid4
 
+from app.services.time_service import now_local_naive, parse_utc_to_local_naive
+
 
 def normalize_goodbarber_order(payload: dict) -> dict:
     source = payload.get("order") or payload.get("data") or payload
@@ -16,7 +18,7 @@ def normalize_goodbarber_order(payload: dict) -> dict:
         "source": "goodbarber",
         "status": map_goodbarber_status(source.get("status")),
         "reference": source.get("reference") or source.get("order_num") or source.get("number") or order_id,
-        "created_at": parse_dt(source.get("created_at")) or datetime.utcnow(),
+        "created_at": parse_dt(source.get("created_at")) or now_local_naive(),
         "customer_name": (
             source.get("customer_name")
             or customer.get("name")
@@ -102,12 +104,7 @@ def format_address(customer: dict) -> str:
 
 
 def parse_dt(value: str | None):
-    if not value:
-        return None
-    try:
-        return datetime.fromisoformat(value.replace("Z", "+00:00"))
-    except ValueError:
-        return None
+    return parse_utc_to_local_naive(value)
 
 
 def as_float(value) -> float:

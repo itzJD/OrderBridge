@@ -1,4 +1,3 @@
-from datetime import datetime
 import logging
 from pathlib import Path
 
@@ -15,6 +14,7 @@ from app.services.pdf_service import generate_order_pdf
 from app.services.print_service import list_printers, print_order, print_test_page
 from app.services.settings_service import get_selected_printer, set_selected_printer
 from app.services.sync_service import upsert_order
+from app.services.time_service import now_local_naive
 
 
 router = APIRouter(prefix="/api/orders", tags=["orders"])
@@ -129,7 +129,7 @@ def receive_goodbarber_webhook(payload: dict, db: Session = Depends(get_db)):
             logger.info("Printing webhook order reference=%s", order.reference)
             job = print_order(order)
             order.status = "printed"
-            order.updated_at = datetime.utcnow()
+            order.updated_at = now_local_naive()
             db.commit()
             db.refresh(order)
         except Exception as error:
@@ -151,7 +151,7 @@ def print_existing_order(order_id: str, db: Session = Depends(get_db)):
         logger.info("Printing existing order reference=%s status=%s", order.reference, order.status)
         job = print_order(order)
         order.status = "printed"
-        order.updated_at = datetime.utcnow()
+        order.updated_at = now_local_naive()
         db.commit()
         db.refresh(order)
     except Exception as error:
@@ -171,7 +171,7 @@ def update_order_status(order_id: str, body: UpdateStatusRequest, db: Session = 
         raise HTTPException(status_code=404, detail="Order not found")
 
     order.status = body.status
-    order.updated_at = datetime.utcnow()
+    order.updated_at = now_local_naive()
     db.commit()
     db.refresh(order)
     return {"order": serialize_order(order)}
